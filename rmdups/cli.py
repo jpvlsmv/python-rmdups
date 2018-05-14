@@ -20,7 +20,7 @@ import click
               help='File list of hashes')
 @click.argument('targets', required=False, nargs=-1,
                 type=click.Path(exists=True, file_okay=False))
-def main(**kwargs):
+def cli(**kwargs):
     """Remove files from target_dir if reference_dir has a copy"""
     mytgts = list(kwargs['targets']) + (list(kwargs['target']))
 

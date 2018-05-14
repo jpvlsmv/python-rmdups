@@ -21,7 +21,7 @@ setup(
     install_requires=dependencies,
     entry_points={
         'console_scripts': [
-            'rmdups = rmdups.cli:main',
+            'rmdups = rmdups.cli:cli',
         ],
     },
     classifiers=[
