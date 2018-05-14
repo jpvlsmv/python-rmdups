@@ -13,7 +13,6 @@ def test_cli(runner):
                            ["-n", "-f", "-h", "foo", "-t", ".", "-t", "/",
                             "-r", "..", "/", "/users", '--debug=cli'])
     assert not result.exception
-    assert result.exit_code == 0
     assert result.output == r'''
     Hello world,
     [('debug', 'cli'), ('force', True), ('hash_type', 'foo'), \
