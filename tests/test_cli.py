@@ -9,21 +9,15 @@ def runner():
 
 
 def test_cli(runner):
-    result = runner.invoke(cli.main)
-    assert result.exit_code == 0
-    assert not result.exception
-    assert result.output.strip() == 'Hello, world.'
-
-
-def test_cli_with_option(runner):
-    result = runner.invoke(cli.main, ['--as-cowboy'])
+    result = runner.invoke(cli.cli,
+                           ["-n", "-f", "-h", "foo", "-t", ".", "-t", "/",
+                            "-r", "..", "/", "/users", '--debug=cli'])
     assert not result.exception
     assert result.exit_code == 0
-    assert result.output.strip() == 'Howdy, world.'
-
-
-def test_cli_with_arg(runner):
-    result = runner.invoke(cli.main, ['Joe'])
-    assert result.exit_code == 0
-    assert not result.exception
-    assert result.output.strip() == 'Hello, Joe.'
+    assert result.output == r'''
+    Hello world,
+    [('debug', 'cli'), ('force', True), ('hash_type', 'foo'), \
+            ('no_action', True), ('reference', '..'), ('reference_file', \
+            None), ('target', ('.', '/')), ('targets', ('/', '/users'))]
+    ['.', '/', '/', '/users']
+    '''
