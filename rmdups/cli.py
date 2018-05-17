@@ -1,5 +1,5 @@
 import click
-# from pathlib import Path
+from pathlib import Path
 
 
 @click.command()
@@ -24,7 +24,22 @@ def cli(**kwargs):
     """Remove files from target_dir if reference_dir has a copy"""
     mytgts = list(kwargs['targets']) + (list(kwargs['target']))
 
-    click.echo('Hello world')
-    click.echo(sorted(kwargs.items(), key=lambda x: x[0]))
-    click.echo(sorted(mytgts))
-    # Handling command line behavior:
+    if 'debug' in kwargs and kwargs['debug'] == 'cli':
+        click.echo('Hello world,')
+        click.echo(sorted(kwargs.items(), key=lambda x: x[0]))
+        click.echo(sorted(mytgts))
+        exit(0)
+
+    # Find a reference path or file
+    if 'reference_file' in kwargs and kwargs['reference_file'] is not None:
+        myref = Path(kwargs['reference_file'])
+    elif 'reference' in kwargs:
+        myref = Path(kwargs['reference']) / Path(f'files.{kwargs["hash_type"]}sum')
+        if not myref.is_file():
+            click.echo(f'Problem with reference file {myref}')
+            exit(3)
+
+    click.echo(f'Operating on reference file {myref}')
+
+    for t in [Path(_) for _ in mytgts]:
+        click.echo(t)
