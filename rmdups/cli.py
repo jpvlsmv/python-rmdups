@@ -1,10 +1,13 @@
 import click
 from pathlib import Path
+from collections import defaultdict
+import re
+import hashlib
 
 
 @click.command()
-@click.option('--no-action', '-n', is_flag=True, help='Take no action')
-@click.option('--force', '-f', is_flag=True, help='Force removals')
+@click.option('--no-action', '-n', is_flag=True, default=False, help='Take no action')
+@click.option('--force', '-f', is_flag=True, default=False, help='Force removals')
 @click.option('--debug', nargs=1, help='')
 @click.option('--hash-type', '-h', nargs=1, required=False,
               help='Hash function to use', default='sha256')
@@ -30,6 +33,10 @@ def cli(**kwargs):
         click.echo(sorted(mytgts))
         exit(0)
 
+    if kwargs['hash_type'] not in hashlib.algorithms_available:
+        click.echo(f'Unknown hash type {kwargs["hash_type"]}')
+        exit(3)
+
     # Find a reference path or file
     if 'reference_file' in kwargs and kwargs['reference_file'] is not None:
         myref = Path(kwargs['reference_file'])
@@ -41,5 +48,23 @@ def cli(**kwargs):
 
     click.echo(f'Operating on reference file {myref}')
 
+    linepattern = re.compile('(?P<hash>\w+) [ *](?P<path>.*)')
+    reference = defaultdict(list)
+    with myref.open() as f:
+        for line in f:
+            (h, p) = linepattern.match(line).groups()
+            reference[h.lower()].append(p)
+
+    click.echo(f'Read {len(reference)} hashes')
+
     for t in [Path(_) for _ in mytgts]:
-        click.echo(t)
+        click.echo(f'Working with target directory {t}')
+        for tpath in t.rglob('*.*'):
+            click.echo(tpath)
+            h = hashlib.new(kwargs['hash_type'], data=tpath.read_bytes())
+
+            if h.hexdigest().lower() in reference:
+                click.echo(f'{h.hexdigest()} seen before')
+                if kwargs['force']:
+                    click.echo('\tREMOVED!!!')
+                    tpath.unlink()
