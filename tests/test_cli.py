@@ -45,22 +45,22 @@ target\file3.txt
 def mk_files():
     r = Path('reference')
     r.mkdir()
-    with open(r / "file2.txt", 'w') as f:
+    with open(r / "file2.txt", 'wb') as f:
         f.write('Duplicate detected')
-    with open(r / "files.md5sum", 'w') as f:
+    with open(r / "files.md5sum", 'wb') as f:
         f.write('4d034101596def954ebccf4e7275cb43  file2.txt')
-    with open(r / "files.sha256sum", 'w') as f:
+    with open(r / "files.sha256sum", 'wb') as f:
         f.write(
                 '5207f1a1f5390a25358aa34969e2aeb275180bce7c62db8c4c64237dee722f52  file2.txt\n'
                 'df24ef8c58e9754070346a01d6aefe6792f1e800d2dbc74dface6ecb93f537f9  files.md5sum'
                 )
     t = Path('target')
     t.mkdir()
-    with open(t / "file1.txt", 'w') as f:
+    with open(t / "file1.txt", 'wb') as f:
         f.write('Hello World')
-    with open(t / "file2.txt", 'w') as f:
+    with open(t / "file2.txt", 'wb') as f:
         f.write('Duplicate detected')
-    with open(t / "file3.txt", 'w') as f:
+    with open(t / "file3.txt", 'wb') as f:
         f.write('Duplicate detected')
 
 
