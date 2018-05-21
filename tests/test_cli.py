@@ -1,6 +1,7 @@
 import pytest
 from click.testing import CliRunner
 from rmdups import cli
+from pathlib import Path
 
 
 @pytest.fixture
@@ -23,47 +24,74 @@ def test_cli(runner):
 
 
 def test_reference_detection_byhash(runner):
-    result = runner.invoke(cli.cli,
-                           ["-h", "md5", "-t", "samples/target",
-                            "-r", "samples/reference"])
-    assert not result.exception
-    assert ''.join(result.output.split()) == ''.join(r'''
-Operating on reference file samples\reference\files.md5sum
+    with runner.isolated_filesystem():
+        mk_files()
+        result = runner.invoke(cli.cli,
+                               ["-h", "md5", "-t", "target",
+                                "-r", "reference"])
+        assert not result.exception
+        assert ''.join(result.output.split()) == ''.join(r'''
+Operating on reference file reference\files.md5sum
 Read 1 hashes
-Working with target directory samples\target
-samples\target\file1.txt
-samples\target\file2.txt
-45a7b49cfdc7b16d03ed544dfa4d8922 seen before
-samples\target\file3.txt
-45a7b49cfdc7b16d03ed544dfa4d8922 seen before
-        '''.split())
+Working with target directory target
+target\file1.txt
+target\file2.txt
+4d034101596def954ebccf4e7275cb43 seen before
+target\file3.txt
+4d034101596def954ebccf4e7275cb43 seen before
+            '''.split())
+
+
+def mk_files():
+    r = Path('reference')
+    r.mkdir()
+    with open(r / "file2.txt", 'w') as f:
+        f.write('Duplicate detected')
+    with open(r / "files.md5sum", 'w') as f:
+        f.write('4d034101596def954ebccf4e7275cb43  file2.txt')
+    with open(r / "files.sha256sum", 'w') as f:
+        f.write(
+                '5207f1a1f5390a25358aa34969e2aeb275180bce7c62db8c4c64237dee722f52  file2.txt\n'
+                'df24ef8c58e9754070346a01d6aefe6792f1e800d2dbc74dface6ecb93f537f9  files.md5sum'
+                )
+    t = Path('target')
+    t.mkdir()
+    with open(t / "file1.txt", 'w') as f:
+        f.write('Hello World')
+    with open(t / "file2.txt", 'w') as f:
+        f.write('Duplicate detected')
+    with open(t / "file3.txt", 'w') as f:
+        f.write('Duplicate detected')
 
 
 def test_reference(runner):
-    result = runner.invoke(cli.cli,
-                           ["-r", "samples/reference", "samples/target"])
-    assert not result.exception
-    assert ''.join(result.output.split()) == ''.join(r'''
-Operating on reference file samples\reference\files.sha256sum
+    with runner.isolated_filesystem():
+        mk_files()
+
+        result = runner.invoke(cli.cli,
+                               ["-r", "reference", "target"])
+        assert not result.exception
+        assert ''.join(result.output.split()) == ''.join(r'''
+Operating on reference file reference\files.sha256sum
 Read 2 hashes
-Working with target directory samples\target
-samples\target\file1.txt
-samples\target\file2.txt
-5207f1a1f5390a25358aa34969e2aeb275180bce7c62db8c4c64237dee722f52 seen before
-samples\target\file3.txt
-5207f1a1f5390a25358aa34969e2aeb275180bce7c62db8c4c64237dee722f52 seen before
-        '''.split())
+Working with target directory target
+target\file1.txt
+target\file2.txt
+target\file3.txt
+            '''.split())
 
 
 def test_hash_mismatch(runner):
-    result = runner.invoke(cli.cli,
-                           ["-R", "samples/reference/files.md5sum", "samples/target"])
-    assert not result.exception
-    assert ''.join(result.output.split()) == ''.join(r'''
-Operating on reference file samples\reference\files.md5sum
+    with runner.isolated_filesystem():
+        mk_files()
+        result = runner.invoke(cli.cli,
+                               ["-R", "reference/files.md5sum", "target"])
+        assert not result.exception
+        assert ''.join(result.output.split()) == ''.join(r'''
+Operating on reference file reference\files.md5sum
 Read 1 hashes
-Working with target directory samples\target
-samples\target\file1.txt
-samples\target\file2.txt
-samples\target\file3.txt
-        '''.split())
+Working with target directory target
+target\file1.txt
+target\file2.txt
+target\file3.txt
+            '''.split())

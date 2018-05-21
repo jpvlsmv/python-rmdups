@@ -68,3 +68,5 @@ def cli(**kwargs):
                 if kwargs['force']:
                     click.echo('\tREMOVED!!!')
                     tpath.unlink()
+            else:
+                pass
