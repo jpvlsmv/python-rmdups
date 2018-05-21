@@ -9,18 +9,18 @@ def runner():
     return CliRunner()
 
 
-def test_cli(runner):
-    result = runner.invoke(cli.cli,
-                           ['--debug=cli',
-                            "-n", "-f", "-h", "md5", "-t", ".", "-t", "/",
-                            "-r", "..", "/", "/users"])
-    assert ''.join(result.output.split()) == ''.join(r'''
-    Hello world,
-    [('debug', 'cli'), ('force', True), ('hash_type', 'md5'),
-     ('no_action', True), ('reference', '..'), ('reference_file', None),
-     ('target', ('.', '/')), ('targets', ('/', '/users'))]
-    ['.', '/', '/', '/users']
-    '''.split())
+#def test_cli(runner):
+#    result = runner.invoke(cli.cli,
+#                           ['--debug=cli',
+#                            "-n", "-f", "-h", "md5", "-t", ".", "-t", "/",
+#                            "-r", "..", "/", "/users"])
+#    assert ''.join(result.output.split()) == ''.join(r'''
+#    Hello world,
+#    [('debug', 'cli'), ('force', True), ('hash_type', 'md5'),
+#     ('no_action', True), ('reference', '..'), ('reference_file', None),
+#     ('target', ('.', '/')), ('targets', ('/', '/users'))]
+#    ['.', '/', '/', '/users']
+#    '''.split())
 
 
 def test_reference_detection_byhash(runner):
