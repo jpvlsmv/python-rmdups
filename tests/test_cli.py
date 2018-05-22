@@ -15,7 +15,7 @@ def mk_files():
     with open(r / "file2.txt", 'wb') as f:
         f.write(b'Duplicate detected\n')
     with open(r / "files.md5sum", 'wb') as f:
-        f.write(b'4d034101596def954ebccf4e7275cb43  file2.txt\n')
+        f.write(b'4d826e209ebe9ac1592265c4e4367515  file2.txt\n')
     with open(r / "files.sha256sum", 'wb') as f:
         f.write(
                 b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc  file2.txt\n'
@@ -65,9 +65,9 @@ Working with target directory target
 target/file1.txt
 e59ff97941044f85df5297e1c302d260 is new
 target/file2.txt
-4d034101596def954ebccf4e7275cb43 seen before
+4d826e209ebe9ac1592265c4e4367515 seen before
 target/file3.txt
-4d034101596def954ebccf4e7275cb43 seen before
+4d826e209ebe9ac1592265c4e4367515 seen before
             '''.split())
 
 
