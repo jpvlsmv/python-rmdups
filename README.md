@@ -1,4 +1,4 @@
-# rmdups
+# rmdups [![Build Status](https://travis-ci.org/jpvlsmv/python-rmdups.svg?branch=master)](https://travis-ci.org/jpvlsmv/python-rmdups)
 
 Remove files from `target_dir` if `reference_dir` has a copy of it already
 
