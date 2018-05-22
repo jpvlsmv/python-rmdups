@@ -38,7 +38,7 @@ def mk_files():
         f.write(b'4d034101596def954ebccf4e7275cb43  file2.txt\n')
     with open(r / "files.sha256sum", 'wb') as f:
         f.write(
-                b'5207f1a1f5390a25358aa34969e2aeb275180bce7c62db8c4c64237dee722f52  file2.txt\n'
+                b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc  file2.txt\n'
                 b'df24ef8c58e9754070346a01d6aefe6792f1e800d2dbc74dface6ecb93f537f9  files.md5sum\n'
                 )
     t = Path('target')
@@ -82,6 +82,9 @@ Operating on reference file reference/files.md5sum
 Read 1 hashes
 Working with target directory target
 target/file1.txt
+d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26 is new
 target/file2.txt
+73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc is new
 target/file3.txt
-            '''.split())
+73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc is new
+'''.split())
