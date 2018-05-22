@@ -9,26 +9,12 @@ def runner():
     return CliRunner()
 
 
-#def test_cli(runner):
-#    result = runner.invoke(cli.cli,
-#                           ['--debug=cli',
-#                            "-n", "-f", "-h", "md5", "-t", ".", "-t", "/",
-#                            "-r", "..", "/", "/users"])
-#    assert ''.join(result.output.split()) == ''.join(r'''
-#    Hello world,
-#    [('debug', 'cli'), ('force', True), ('hash_type', 'md5'),
-#     ('no_action', True), ('reference', '..'), ('reference_file', None),
-#     ('target', ('.', '/')), ('targets', ('/', '/users'))]
-#    ['.', '/', '/', '/users']
-#    '''.split())
-
-
 def test_reference_detection_byhash(runner):
     with runner.isolated_filesystem():
         mk_files()
         result = runner.invoke(cli.cli,
                                ["-h", "md5", "-t", "target",
-                                "-r", "reference"])
+                                "-r", "reference", "--debug", "all"])
         assert not result.exception
         assert ''.join(result.output.split()) == ''.join(r'''
 Operating on reference file reference/files.md5sum
@@ -69,7 +55,7 @@ def test_reference(runner):
         mk_files()
 
         result = runner.invoke(cli.cli,
-                               ["-r", "reference", "target"])
+                               ["-r", "reference", "--debug", "all", "target"])
         assert not result.exception
         assert ''.join(result.output.split()) == ''.join(r'''
 Operating on reference file reference/files.sha256sum
@@ -85,7 +71,7 @@ def test_hash_mismatch(runner):
     with runner.isolated_filesystem():
         mk_files()
         result = runner.invoke(cli.cli,
-                               ["-R", "reference/files.md5sum", "target"])
+                               ["-R", "reference/files.md5sum", "--debug", "all", "target"])
         assert not result.exception
         assert ''.join(result.output.split()) == ''.join(r'''
 Operating on reference file reference/files.md5sum
