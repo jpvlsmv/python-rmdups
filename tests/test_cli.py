@@ -21,6 +21,7 @@ Operating on reference file reference/files.md5sum
 Read 1 hashes
 Working with target directory target
 target/file1.txt
+e59ff97941044f85df5297e1c302d260 is new
 target/file2.txt
 4d034101596def954ebccf4e7275cb43 seen before
 target/file3.txt
@@ -62,8 +63,11 @@ Operating on reference file reference/files.sha256sum
 Read 2 hashes
 Working with target directory target
 target/file1.txt
+d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26 is new
 target/file2.txt
+73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc seen before
 target/file3.txt
+73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc seen before
             '''.split())
 
 
