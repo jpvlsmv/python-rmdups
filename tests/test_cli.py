@@ -9,26 +9,6 @@ def runner():
     return CliRunner()
 
 
-def test_reference_detection_byhash(runner):
-    with runner.isolated_filesystem():
-        mk_files()
-        result = runner.invoke(cli.cli,
-                               ["-h", "md5", "-t", "target",
-                                "-r", "reference", "--debug", "all"])
-        assert not result.exception
-        assert ''.join(result.output.split()) == ''.join(r'''
-Operating on reference file reference/files.md5sum
-Read 1 hashes
-Working with target directory target
-target/file1.txt
-e59ff97941044f85df5297e1c302d260 is new
-target/file2.txt
-4d034101596def954ebccf4e7275cb43 seen before
-target/file3.txt
-4d034101596def954ebccf4e7275cb43 seen before
-            '''.split())
-
-
 def mk_files():
     r = Path('reference')
     r.mkdir()
@@ -68,6 +48,26 @@ target/file2.txt
 73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc seen before
 target/file3.txt
 73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc seen before
+            '''.split())
+
+
+def test_reference_dir_auto_from_hash(runner):
+    with runner.isolated_filesystem():
+        mk_files()
+        result = runner.invoke(cli.cli,
+                               ["-h", "md5", "-t", "target",
+                                "-r", "reference", "--debug", "all"])
+        assert not result.exception
+        assert ''.join(result.output.split()) == ''.join(r'''
+Operating on reference file reference/files.md5sum
+Read 1 hashes
+Working with target directory target
+target/file1.txt
+e59ff97941044f85df5297e1c302d260 is new
+target/file2.txt
+4d034101596def954ebccf4e7275cb43 seen before
+target/file3.txt
+4d034101596def954ebccf4e7275cb43 seen before
             '''.split())
 
 
