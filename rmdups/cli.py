@@ -7,7 +7,8 @@ import hashlib
 
 @click.command()
 @click.option('--no-action', '-n', is_flag=True, default=False, help='Take no action')
-@click.option('--force', '-f', is_flag=True, default=False, help='Force removals')
+@click.option('--import', is_flag=True, default=False, help='Copy unique files into reference')
+@click.option('--purge', is_flag=True, default=False, help='Remove known files from target')
 @click.option('--debug', nargs=1, help='')
 @click.option('--hash-type', '-h', nargs=1, required=False,
               help='Hash function to use', default='sha256')
@@ -65,9 +66,21 @@ def cli(**kwargs):
 
             if h.hexdigest().lower() in reference:
                 click.echo(f'{h.hexdigest()} seen before')
-                if kwargs['force']:
-                    click.echo('\tREMOVED!!!')
-                    tpath.unlink()
+                if kwargs['import']:
+                    t_rel = tpath.relative_to(t)
+                    ref_rel = myref.parent() / t_rel
+                    if kwargs['no_action']:
+                        click.echo(f'\twould import to {ref_rel}')
+                    else:
+                        ref_rel.write_bytes(tpath.read_bytes())
+                        click.echo('\timported')
+                if kwargs['purge']:
+                    if kwargs['no_action']:
+                        click.echo('\twould remove')
+                    else:
+                        tpath.unlink()
+                        click.echo('\tremoved')
+
             else:
                 if kwargs['debug']:
                     click.echo(f'{h.hexdigest()} is new')
