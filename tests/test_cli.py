@@ -9,26 +9,21 @@ def runner():
     return CliRunner()
 
 
+files = [
+            ( Path('target') , 'file1.txt', b'Hello World\n', b'e59ff97941044f85df5297e1c302d260', b'd2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26')
+            ( Path('target') , 'file2.txt', b'Duplicate detected\n', b'4d826e209ebe9ac1592265c4e4367515', b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc')
+            ( Path('target') , 'file3.txt', b'Duplicate detected\n', b'4d826e209ebe9ac1592265c4e4367515', b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc')
+            ( Path('reference') , 'file2.txt', b'Duplicate detected\n', b'4d826e209ebe9ac1592265c4e4367515', b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc')
+            ( Path('reference') , 'files.md5sum', b'4d826e209ebe9ac1592265c4e4367515  file2.txt\n', None, None)
+            ( Path('reference') , 'files.sha256sum', b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc  file2.txt\n', None, None)
+        ]
+
 def mk_files():
-    r = Path('reference')
-    r.mkdir()
-    with open(r / "file2.txt", 'wb') as f:
-        f.write(b'Duplicate detected\n')
-    with open(r / "files.md5sum", 'wb') as f:
-        f.write(b'4d826e209ebe9ac1592265c4e4367515  file2.txt\n')
-    with open(r / "files.sha256sum", 'wb') as f:
-        f.write(
-                b'73b3a8cbcde30600ac05a6d19d7ca4569b8bad67fd0d494eb53ff504312d20bc  file2.txt\n'
-                b'df24ef8c58e9754070346a01d6aefe6792f1e800d2dbc74dface6ecb93f537f9  files.md5sum\n'
-                )
-    t = Path('target')
-    t.mkdir()
-    with open(t / "file1.txt", 'wb') as f:
-        f.write(b'Hello World\n')
-    with open(t / "file2.txt", 'wb') as f:
-        f.write(b'Duplicate detected\n')
-    with open(t / "file3.txt", 'wb') as f:
-        f.write(b'Duplicate detected\n')
+    for (p, nm, content, md5, sha) in files:
+        r = Path('p')
+        r.mkdir()
+        with open(r / nm, 'wb') as f:
+            f.write(content)
 
 
 def test_reference(runner):
