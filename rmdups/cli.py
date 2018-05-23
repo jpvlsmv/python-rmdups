@@ -69,5 +69,5 @@ def cli(**kwargs):
                     click.echo('\tREMOVED!!!')
                     tpath.unlink()
             else:
-                click.echo(f'{h.hexdigest()} seen before')
-                #pass
+                if kwargs['debug']:
+                    click.echo(f'{h.hexdigest()} is new')
