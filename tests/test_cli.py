@@ -67,7 +67,7 @@ def test_reference_dir_auto_from_hash(runner):
                                 "-r", "reference", "--debug", "all"])
         assert not result.exception
         assert ''.join(result.output.split()).replace('\\', '/') == ''.join(r'''
-Operating on reference file reference\files.md5sum
+Operating on reference file reference/files.md5sum
 Read 1 hashes
 Working with target directory target
 target/file1.txt
