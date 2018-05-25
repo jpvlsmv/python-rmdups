@@ -25,8 +25,13 @@ import hashlib
 @click.argument('targets', required=False, nargs=-1,
                 type=click.Path(exists=True, file_okay=False))
 def cli(**kwargs):
-    """Remove files from target_dir if reference_dir has a copy"""
     mytgts = list(kwargs['targets']) + (list(kwargs['target']))
+
+    if 'debug' in kwargs and kwargs['debug'] is not None:
+        m = click.echo
+    else:
+        def m():
+            pass
 
     if 'debug' in kwargs and kwargs['debug'] == 'cli':
         click.echo('Hello world,')
@@ -47,7 +52,7 @@ def cli(**kwargs):
             click.echo(f'Problem with reference file {myref}')
             exit(3)
 
-    click.echo(f'Operating on reference file {myref}')
+        m(f'Operating on reference file {myref}')
 
     linepattern = re.compile('(?P<hash>\w+) [ *](?P<path>.*)')
     reference = defaultdict(list)
@@ -56,31 +61,30 @@ def cli(**kwargs):
             (h, p) = linepattern.match(line).groups()
             reference[h.lower()].append(p)
 
-    click.echo(f'Read {len(reference)} hashes')
+    m(f'Read {len(reference)} hashes')
 
     for t in [Path(_) for _ in mytgts]:
-        click.echo(f'Working with target directory {t}')
+        m(f'Working with target directory {t}')
         for tpath in t.rglob('*.*'):
-            click.echo(tpath)
+            m(tpath)
             h = hashlib.new(kwargs['hash_type'], data=tpath.read_bytes())
 
             if h.hexdigest().lower() in reference:
-                click.echo(f'{h.hexdigest()} seen before')
-                if kwargs['import']:
-                    t_rel = tpath.relative_to(t)
-                    ref_rel = myref.parent() / t_rel
-                    if kwargs['no_action']:
-                        click.echo(f'\twould import to {ref_rel}')
-                    else:
-                        ref_rel.write_bytes(tpath.read_bytes())
-                        click.echo('\timported')
+                m(f'{h.hexdigest()} seen before')
                 if kwargs['purge']:
                     if kwargs['no_action']:
-                        click.echo('\twould remove')
+                        m('\twould remove')
                     else:
                         tpath.unlink()
-                        click.echo('\tremoved')
+                        m('\tremoved')
 
             else:
-                if kwargs['debug']:
-                    click.echo(f'{h.hexdigest()} is new')
+                m(f'{h.hexdigest()} is new')
+                if kwargs['import']:
+                    t_rel = tpath.relative_to(t)
+                    ref_rel = myref.parent / t_rel
+                    if kwargs['no_action']:
+                        m(f'\twould import to {ref_rel}')
+                    else:
+                        ref_rel.write_bytes(tpath.read_bytes())
+                        m('\timported')
